@@ -7,7 +7,14 @@
   align-items: center;
 }
 
-.container
+.container main {
+  width: 556px;
+
+  background-color: #ffffff;
+  padding: 2rem;
+  padding-bottom: 4.5rem;
+  border-radius: 0.75rem;
+}
 
 .word{
   width: 100%;
