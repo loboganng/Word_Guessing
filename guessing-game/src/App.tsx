@@ -35,18 +35,22 @@ export default function App(){
     startGame()
   }, [])
 
+  if (!challenge) {
+    return
+  }
+
   return(
     <div className={styles.container}>
       <main>
         <Header current={attempts} max={10} onRestart={handleRestartGame}/>
         
         <Tip tip="Dynamic programming language"/>
+
         <div className={styles.word}>
-          <Letter value="R"/>
-          <Letter value="E"/>
-          <Letter value="A"/>
-          <Letter value="C"/>
-          <Letter value="T"/>
+          {
+            challenge.word.split("").map(() => (
+              <Letter value=""/>
+            ))}
         </div>
 
         <h4>Guesses</h4>
