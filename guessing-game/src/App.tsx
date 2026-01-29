@@ -1,5 +1,5 @@
 import styles from "./app.module.css"
-import { useEffect, useState } from "react"
+import { useEffect, useEffectEvent, useState } from "react"
 
 import { WORDS, Challenge } from "./utils/words"
 
@@ -17,6 +17,8 @@ export default function App(){
   const[letter, setLetter] = useState("") //Initial letter display
   const [challenge, setChallenge] = useState<Challenge | null>(null)  //Initial challenge word
   const [lettersUsed, setLettersUsed] = useState<LettersUsedProps[]>([])  //Initial array of letters already guessed
+
+const ATTEMPTS_MARGIN = 3
 
   function handleRestartGame(){
     alert("Restart game!")
@@ -51,6 +53,7 @@ export default function App(){
 
     //If the letter was already inputed
     if (exists) {
+      setLetter("")
       return alert("You already tried the letter " + value + ". Try another letter!")
     }
 
@@ -72,9 +75,37 @@ export default function App(){
     setLetter("")
   }
 
+  //End of game function
+  function endGame(message: string) {
+    alert(message)  //Display message
+    startGame() //Restart game
+  }
+
+  //Initial starting function
   useEffect(() => {
     startGame()
   }, [])
+
+  //To check when game is finished
+  useEffect(() =>{
+    if (!challenge) { //Check if there's a word
+      return
+    }
+
+    setTimeout(() => {  //Timeout to have time to see the word
+      //If right letter = lenght of challenge letter
+      if (score === challenge.word.length) {
+        return endGame("Congrats, you discovered the word! :)")
+      }
+
+      //Creating limit of attempts
+      const attemptLimit = challenge.word.length + ATTEMPTS_MARGIN
+      //If attempts == limits of attempts
+      if (lettersUsed.length === attemptLimit) {
+        return endGame("Too bad, you've ran out of attempts! :(")
+      }
+    }, 200);
+  }, [score, lettersUsed.length]) //Params of function
 
   if (!challenge) {
     return
@@ -83,7 +114,7 @@ export default function App(){
   return(
     <div className={styles.container}>
       <main>
-        <Header current={score} max={10} onRestart={handleRestartGame}/> 
+        <Header current={lettersUsed.length} max={challenge?.word.length + ATTEMPTS_MARGIN} onRestart={handleRestartGame}/> 
         
         <Tip tip={challenge.tip}/>
 
