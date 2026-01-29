@@ -21,7 +21,12 @@ export default function App(){
 const ATTEMPTS_MARGIN = 3
 
   function handleRestartGame(){
-    alert("Restart game!")
+    //Confirming if user wants to restart game
+    const isConfirmed = window.confirm("Are you sure you'd like to restart?")
+
+    if (isConfirmed) {
+      startGame()
+    }
   }
 
   function startGame(){ //Starting the game
