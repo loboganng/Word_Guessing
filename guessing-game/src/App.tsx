@@ -13,10 +13,11 @@ import { Tip } from "./components/Tip"
 
 export default function App(){
   //Creating initial useStates
-  const[letter, setLetter] = useState("")
-  const [attempts, setAttempts] = useState(0)
-  const [lettersUsed, setLettersUsed] = useState<LettersUsedProps[]>([])
-  const [challenge, setChallenge] = useState<Challenge | null>(null)
+  const [score, setScore] = useState(0) //Amount of correct guesses
+  const[letter, setLetter] = useState("") //Initial letter display
+  const [attempts, setAttempts] = useState(0) //Initial number of attempts
+  const [challenge, setChallenge] = useState<Challenge | null>(null)  //Initial challenge word
+  const [lettersUsed, setLettersUsed] = useState<LettersUsedProps[]>([])  //Initial array of letters already guessed
 
   function handleRestartGame(){
     alert("Restart game!")
@@ -50,9 +51,20 @@ export default function App(){
       return alert("You already tried the letter " + value + ". Try another letter!")
     }
 
-    //We get the previous state + the additional wrog letter
-    setLettersUsed((prevState) => [ ...prevState, {value, correct: false}])
+    //Splitting the word into an array of letter
+    //Filtering letter by letter
+    //Returni the lenght
+    const hits = challenge.word.toUpperCase().split("").filter((char) => char === value).length
 
+    //Checking if the amount is greater than 0
+    //Letter exists and is correct
+    const correct = hits > 0
+    const currentScore = score + hits //Updating user score
+
+    //We get the previous state + the additional wrog letter
+    setLettersUsed((prevState) => [ ...prevState, {value, correct}])
+    //Updating the score
+    setScore(currentScore)
     //Clearing the input
     setLetter("")
   }
@@ -70,7 +82,7 @@ export default function App(){
       <main>
         <Header current={attempts} max={10} onRestart={handleRestartGame}/>
         
-        <Tip tip="Dynamic programming language"/>
+        <Tip tip={challenge.tip}/>
 
         <div className={styles.word}>
           {
