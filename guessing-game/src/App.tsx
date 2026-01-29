@@ -15,7 +15,6 @@ export default function App(){
   //Creating initial useStates
   const [score, setScore] = useState(0) //Amount of correct guesses
   const[letter, setLetter] = useState("") //Initial letter display
-  const [attempts, setAttempts] = useState(0) //Initial number of attempts
   const [challenge, setChallenge] = useState<Challenge | null>(null)  //Initial challenge word
   const [lettersUsed, setLettersUsed] = useState<LettersUsedProps[]>([])  //Initial array of letters already guessed
 
@@ -23,13 +22,17 @@ export default function App(){
     alert("Restart game!")
   }
 
-  function startGame(){
+  function startGame(){ //Starting the game
+    //Choose a random word from the word list
     const index = Math.floor(Math.random() * WORDS.length)
     const randomWord = WORDS[index]
 
+    //Set the generated word as the challenge
     setChallenge(randomWord)
-    setAttempts(0)
-    setLetter("")
+
+    setScore(0) //Set initial score
+    setLetter("") //Set the initial letter display
+    setLettersUsed([])  //Reset the used letter list
   }
 
   function handleConfirm(){
@@ -80,15 +83,20 @@ export default function App(){
   return(
     <div className={styles.container}>
       <main>
-        <Header current={attempts} max={10} onRestart={handleRestartGame}/>
+        <Header current={score} max={10} onRestart={handleRestartGame}/> 
         
         <Tip tip={challenge.tip}/>
 
         <div className={styles.word}>
-          {
-            challenge.word.split("").map(() => (
-              <Letter value=""/>
-            ))}
+          {challenge.word.split("").map((letter, index) => {
+            // Comparing if the chosen word is in the array of correct letters
+            const letterUsed = lettersUsed.find(
+              (used) => used.value.toUpperCase() === letter.toUpperCase()
+            )
+
+            //If the word is in the array, display in the screen
+            return (<Letter key={index} value={letterUsed?.value} color={letterUsed?.correct ? "correct" : "default"} />)
+          })}
         </div>
 
         <h4>Guesses</h4>
